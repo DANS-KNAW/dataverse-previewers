@@ -198,9 +198,3 @@ This has been done for the Rich Html Previewer, which also has the reverse issue
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-.annotation_raw {
-    max-height: 500px;
-    word-break: break-all;
-    overflow-y: auto;
-}
