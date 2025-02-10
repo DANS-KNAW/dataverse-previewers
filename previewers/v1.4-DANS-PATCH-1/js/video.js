@@ -26,7 +26,7 @@ function writeContent(fileUrl, file, title, authors) {
     const userLanguages = [...navigator.languages];
     const locale = queryParams.get("locale");
     if (locale && !userLanguages.includes(locale)) {
-        userLanguages.unshift(locale); // add as first element
+        userLanguages.unshift(locale); // add query argument as first element
     }
 
     $.ajax({
@@ -79,22 +79,24 @@ function appendVideoElements(fileUrl, videoId, files, siteUrl, userLanguages, ap
     }));
 
     // determine default track
-    let defaultTrackUrl = trackUrlWithoutLang; // choice of depositor
-    if (!defaultTrackUrl) {
+    let defaultTrackUrl = null;
+    loop: for (const lang of userLanguages) {
         // match user preferences with available subtitles
-        loop: for (const lang of userLanguages) {
-            for (const [url, trackLang] of sortedSubtitles) {
-                if (trackLang) {
-                    if (trackLang === lang || trackLang.startsWith(lang.replace(/-.*/, ''))) {
-                        defaultTrackUrl = url;
-                        break loop;
-                    }
+        for (const [url, trackLang] of sortedSubtitles) {
+            if (trackLang) {
+                if (trackLang === lang || trackLang.startsWith(lang.replace(/-.*/, ''))) {
+                    defaultTrackUrl = url;
+                    break loop;
                 }
             }
         }
     }
     if (!defaultTrackUrl && subtitles) {
-        // no match found, use first subtitle as default
+        // no match found, use track without language
+        defaultTrackUrl = trackUrlWithoutLang;
+    }
+    if (!defaultTrackUrl && subtitles.size === 1) {
+        // no match found, and only one track available, use that one
         defaultTrackUrl = subtitles.keys().next().value;
     }
 
