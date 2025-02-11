@@ -101,7 +101,7 @@ function appendVideoElements(fileUrl, videoId, files, siteUrl, userLanguages, ap
     }
 
     const videoElement = $("<video/>")
-        .attr("corssorigin", "anonymous") // required for getting subtitles from object storage
+        .attr("crossorigin", "anonymous") // required for getting subtitles from object storage
         .prop("controls", true)
         .append($('<source/>').attr("src", fileUrl));
 
